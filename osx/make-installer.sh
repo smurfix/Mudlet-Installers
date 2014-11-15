@@ -35,8 +35,6 @@ sudo cp -r ../../luasql Mudlet.app/Contents/MacOS
 # As well as the loader for them
 sudo cp ../../run_mudlet Mudlet.app/Contents/MacOS
 
-#Contents/MacOS:.:../MacOS:$DYLD_LIBRARY_PATH
-
 # Edit the executable to be run_mudlet instead of Mudlet
 read
 
