@@ -18,9 +18,9 @@ cd src/
 # Remove old Mudlet.app, as macdeployqt doesn't like re-doing things otherwise. Requires admin rights.
 sudo rm -rf Mudlet.app/
 
-# Compile
+# Compile using all available cores
 qmake
-make -j 2
+make -j `sysctl -n hw.ncpu`
 
 # Bundle in Qt libraries
 ./mac-deploy.sh
@@ -36,7 +36,7 @@ sudo cp -r ../../luasql Mudlet.app/Contents/MacOS
 sudo cp ../../run_mudlet Mudlet.app/Contents/MacOS
 
 # Edit the executable to be run_mudlet instead of Mudlet
-read
+/usr/libexec/PlistBuddy -c "Set CFBundleExecutable run_mudlet" Mudlet.app/Contents/Info.plist
 
 # Generate final .dmg
 rm ~/Desktop/Mudlet.dmg
