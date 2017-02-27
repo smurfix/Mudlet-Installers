@@ -12,7 +12,7 @@ git fetch
 git checkout release_30
 
 # Setup PATH to find qmake
-PATH=~/Qt5.3.1/5.3/clang_64/bin:$PATH
+PATH=/Users/mudlet/Qt/5.8/clang_64/bin:$PATH
 
 cd src/
 # Remove old Mudlet.app, as macdeployqt doesn't like re-doing things otherwise. Requires admin rights.
@@ -40,4 +40,7 @@ sudo cp ../../run_mudlet Mudlet.app/Contents/MacOS
 
 # Generate final .dmg
 rm ~/Desktop/Mudlet.dmg
+
+# If you don't get a background image on Sierra, either upgrade
+# or apply a workaround from https://github.com/LinusU/node-appdmg/issues/121
 appdmg ./osx-installer/mudlet-appdmg.json ~/Desktop/Mudlet.dmg
