@@ -1,7 +1,12 @@
 #!/bin/bash
 
+# abort script if any command fails
+set -e
+
 # Retrieve latest source code without any history
-git clone https://github.com/Mudlet/Mudlet.git source
+if [ ! -d "source" ]; then
+  git clone --depth 1 https://github.com/Mudlet/Mudlet.git source
+fi
 
 # In case it already exists, update it
 cd source/
