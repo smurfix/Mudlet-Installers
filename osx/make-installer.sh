@@ -28,7 +28,7 @@ qmake
 make -j `sysctl -n hw.ncpu`
 
 # Bundle in Qt libraries
-./mac-deploy.sh
+../../mac-deploy.sh
 
 # Bundle in dynamically loaded libraries
 sudo cp ../../lfs.so Mudlet.app/Contents/MacOS
