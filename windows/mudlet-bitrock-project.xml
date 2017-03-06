@@ -257,6 +257,9 @@
                         <distributionDirectory>
                             <origin>windows-binaries-32bit/platforms</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>windows-binaries-32bit/luasql</origin>
+                        </distributionDirectory>
                         <distributionFile>
                             <origin>windows-binaries-32bit/en_US.dic</origin>
                         </distributionFile>
