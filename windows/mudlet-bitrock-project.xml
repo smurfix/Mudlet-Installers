@@ -13,6 +13,25 @@
             <canBeEdited>1</canBeEdited>
             <selected>1</selected>
             <show>1</show>
+            <desktopShortcutList>
+                <shortcut>
+                    <comment></comment>
+                    <exec></exec>
+                    <icon></icon>
+                    <name>Play Mudlet</name>
+                    <path></path>
+                    <platforms>all</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/mudlet.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath></windowsPath>
+                    <ruleList>
+                        <isTrue value="${createdesktop}"/>
+                    </ruleList>
+                </shortcut>
+            </desktopShortcutList>
             <folderList>
                 <folder>
                     <description>Program Files</description>
@@ -360,6 +379,9 @@
                     <windowsExecArgs></windowsExecArgs>
                     <windowsIcon></windowsIcon>
                     <windowsPath></windowsPath>
+                    <ruleList>
+                        <isTrue value="${createshortcut}"/>
+                    </ruleList>
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>
@@ -414,6 +436,22 @@
             <mustExist>0</mustExist>
             <width>30</width>
         </directoryParameter>
+        <booleanParameter>
+            <name>createshortcut</name>
+            <description>Would you like to create a start menu shortcut?</description>
+            <explanation></explanation>
+            <value>1</value>
+            <default></default>
+            <displayStyle>checkbox-left</displayStyle>
+        </booleanParameter>
+        <booleanParameter>
+            <name>createdesktop</name>
+            <description>Would you like to create a Desktop shortcut?</description>
+            <explanation></explanation>
+            <value>0</value>
+            <default></default>
+            <displayStyle>checkbox-left</displayStyle>
+        </booleanParameter>
     </parameterList>
     <platformOptionsList>
         <platformOptions>
