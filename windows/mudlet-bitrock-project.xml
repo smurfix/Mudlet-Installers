@@ -1,7 +1,7 @@
 <project>
     <shortName>Mudlet</shortName>
     <fullName>Mudlet</fullName>
-    <version>3.0.0-iota_test_final_installer</version>
+    <version>3.0.0-iota_test_final_installer_17</version>
     <licenseFile>COPYING</licenseFile>
     <leftImage>mudlet_installer_left_side.png</leftImage>
     <logoImage>mudlet.png</logoImage>
@@ -116,10 +116,10 @@
                             <origin>binaries-64bit/libhunspell-1.3.so.0</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/usr/share/hunspell/en_US.aff</origin>
+                            <origin>../../../../../../usr/share/hunspell/en_US.aff</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/usr/share/hunspell/en_US.dic</origin>
+                            <origin>../../../../../../usr/share/hunspell/en_US.dic</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>binaries-32bit/libQt5Core.so.5</origin>
@@ -190,10 +190,10 @@
                             <origin>binaries-64bit/libhunspell-1.3.so.0</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/usr/share/hunspell/en_US.aff</origin>
+                            <origin>../../../../../../usr/share/hunspell/en_US.aff</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/usr/share/hunspell/en_US.dic</origin>
+                            <origin>../../../../../../usr/share/hunspell/en_US.dic</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>binaries-64bit/libQt5Core.so.5</origin>
@@ -237,28 +237,52 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>/usr/share/hunspell/en_US.aff</origin>
+                            <origin>../../../../../../usr/share/hunspell/en_US.aff</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/usr/share/hunspell/en_US.dic</origin>
+                            <origin>../../../../../../usr/share/hunspell/en_US.dic</origin>
                         </distributionFile>
-                        <distributionFile>
-                            <origin>windows-binaries-32bit/mudlet.exe</origin>
-                        </distributionFile>
-                        <distributionDirectory>
-                            <origin>windows-binaries-32bit/luasql</origin>
-                        </distributionDirectory>
                         <distributionDirectory>
                             <origin>../mudlet-lua</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>windows-binaries-32bit/audio</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>windows-binaries-32bit/imageformats</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>windows-binaries-32bit/mediaservice</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>windows-binaries-32bit/platforms</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>windows-binaries-32bit/en_US.dic</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>windows-binaries-32bit/icudt54.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>windows-binaries-32bit/icuin54.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>windows-binaries-32bit/icuuc54.dll</origin>
+                        </distributionFile>
                         <distributionFile>
                             <origin>windows-binaries-32bit/lfs.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>windows-binaries-32bit/libeay32.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>windows-binaries-32bit/libEGL.dll</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>windows-binaries-32bit/libgcc_s_dw2-1.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>windows-binaries-32bit/libGLESV2.dll</origin>
+                            <origin>windows-binaries-32bit/libGLESv2.dll</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>windows-binaries-32bit/libhunspell-1.4-0.dll</origin>
@@ -285,6 +309,9 @@
                             <origin>windows-binaries-32bit/lua51.dll</origin>
                         </distributionFile>
                         <distributionFile>
+                            <origin>windows-binaries-32bit/mudlet.exe</origin>
+                        </distributionFile>
+                        <distributionFile>
                             <origin>windows-binaries-32bit/Qt5Core.dll</origin>
                         </distributionFile>
                         <distributionFile>
@@ -309,20 +336,14 @@
                             <origin>windows-binaries-32bit/rex_pcre.dll</origin>
                         </distributionFile>
                         <distributionFile>
+                            <origin>windows-binaries-32bit/ssleay32.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
                             <origin>windows-binaries-32bit/zip.dll</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>windows-binaries-32bit/zlib1.dll</origin>
                         </distributionFile>
-                        <distributionDirectory>
-                            <origin>windows-binaries-32bit/audio</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>windows-binaries-32bit/mediaservice</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>windows-binaries-32bit/platforms</origin>
-                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
             </folderList>
@@ -358,7 +379,7 @@
             <target>${installdir}/bin/libphonon.so.4.6.0</target>
         </createSymLink>
     </postInstallationActionList>
-    <compressionAlgorithm>lzma-ultra</compressionAlgorithm>
+    <compressionAlgorithm>lzham-ultra</compressionAlgorithm>
     <disableSplashScreen>1</disableSplashScreen>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
