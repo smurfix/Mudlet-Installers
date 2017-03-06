@@ -3,9 +3,9 @@
 # abort script if any command fails
 set -e
 
-# Retrieve latest source code without any history
+# Retrieve latest source code, keep history as it's useful to edit sometimes
 if [ ! -d "source" ]; then
-  git clone --depth 1 https://github.com/Mudlet/Mudlet.git source
+  git clone https://github.com/Mudlet/Mudlet.git source
 fi
 
 # In case it already exists, update it
@@ -28,8 +28,10 @@ qmake
 make -j `sysctl -n hw.ncpu`
 
 # Bundle in Qt libraries
-../../mac-deploy.sh
+cd ../../
+./mac-deploy.sh
 
+cd source/src
 # Bundle in dynamically loaded libraries
 sudo cp ../../lfs.so Mudlet.app/Contents/MacOS
 sudo cp ../../rex_pcre.so Mudlet.app/Contents/MacOS
@@ -44,7 +46,7 @@ sudo cp ../../run_mudlet Mudlet.app/Contents/MacOS
 /usr/libexec/PlistBuddy -c "Set CFBundleExecutable run_mudlet" Mudlet.app/Contents/Info.plist
 
 # Generate final .dmg
-rm ~/Desktop/Mudlet.dmg
+rm -f ~/Desktop/Mudlet.dmg
 
 # If you don't get a background image on Sierra, either upgrade
 # or apply a workaround from https://github.com/LinusU/node-appdmg/issues/121
