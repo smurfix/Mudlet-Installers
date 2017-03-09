@@ -34,7 +34,7 @@ rm -rf build/
 mkdir build
 
 # delete previous appimage as well since we need to regenerate it twice
-rm Mudlet*.AppImage
+rm -f Mudlet*.AppImage
 
 # move the binary up to the build folder
 cp source/src/mudlet build/
