@@ -1,11 +1,12 @@
 <project>
     <shortName>Mudlet</shortName>
     <fullName>Mudlet</fullName>
-    <version>3.0.0-iota_test_final_installer_17</version>
+    <version>3.0.0-final-testing</version>
     <licenseFile>COPYING</licenseFile>
     <leftImage>mudlet_installer_left_side.png</leftImage>
     <logoImage>mudlet.png</logoImage>
     <splashImage>mudlet_splash.png</splashImage>
+    <wmImage>mudlet_main_48px.png</wmImage>
     <componentList>
         <component>
             <name>default</name>
@@ -368,6 +369,17 @@
                         </distributionFile>
                     </distributionFileList>
                 </folder>
+                <folder>
+                    <description>Program Files (windows)</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>mudlet_main_48px.ico</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
             </folderList>
             <startMenuShortcutList>
                 <startMenuShortcut>
@@ -386,30 +398,17 @@
             </startMenuShortcutList>
         </component>
     </componentList>
-    <postInstallationActionList>
-        <createSymLink>
-            <linkName>${installdir}/bin/liblua5.1.so.0</linkName>
-            <target>${installdir}/bin/liblua5.1.so.0.0.0</target>
-        </createSymLink>
-        <createSymLink>
-            <linkName>${installdir}/bin/rex_pcre.so</linkName>
-            <target>${installdir}/bin/rex_pcre.so.2.4</target>
-        </createSymLink>
-        <createSymLink>
-            <linkName>${installdir}/bin/libsqlite3.so.0</linkName>
-            <target>${installdir}/bin/libsqlite3.so.0.8.6</target>
-        </createSymLink>
-        <createSymLink>
-            <linkName>${installdir}/bin/libphonon.so.4</linkName>
-            <target>${installdir}/bin/libphonon.so.4.6.0</target>
-        </createSymLink>
-    </postInstallationActionList>
     <compressionAlgorithm>lzham-ultra</compressionAlgorithm>
-    <disableSplashScreen>1</disableSplashScreen>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
+    <enableUpx>1</enableUpx>
+    <productDisplayIcon>${installdir}/mudlet_main_48px.ico</productDisplayIcon>
+    <productUrlInfoAbout>http://mudlet.org</productUrlInfoAbout>
     <saveRelativePaths>1</saveRelativePaths>
+    <singleInstanceCheck>1</singleInstanceCheck>
     <vendor>Mudlet makers</vendor>
+    <windowsExecutableIcon>mudlet_main_48px.ico</windowsExecutableIcon>
+    <windowsUninstallerExecutableIcon>mudlet_main_48px.ico</windowsUninstallerExecutableIcon>
     <finalPageActionList>
         <runProgram>
             <program>${installdir}/mudlet.exe</program>
@@ -436,22 +435,30 @@
             <mustExist>0</mustExist>
             <width>30</width>
         </directoryParameter>
-        <booleanParameter>
-            <name>createshortcut</name>
-            <description>Would you like to create a start menu shortcut?</description>
+        <parameterGroup>
+            <name>Shortcuts</name>
             <explanation></explanation>
-            <value>1</value>
+            <value></value>
             <default></default>
-            <displayStyle>checkbox-left</displayStyle>
-        </booleanParameter>
-        <booleanParameter>
-            <name>createdesktop</name>
-            <description>Would you like to create a Desktop shortcut?</description>
-            <explanation></explanation>
-            <value>0</value>
-            <default></default>
-            <displayStyle>checkbox-left</displayStyle>
-        </booleanParameter>
+            <parameterList>
+                <booleanParameter>
+                    <name>createshortcut</name>
+                    <description>Would you like to create a start menu shortcut?</description>
+                    <explanation></explanation>
+                    <value>1</value>
+                    <default></default>
+                    <displayStyle>checkbox-left</displayStyle>
+                </booleanParameter>
+                <booleanParameter>
+                    <name>createdesktop</name>
+                    <description>Would you like to create a Desktop shortcut?</description>
+                    <explanation></explanation>
+                    <value>0</value>
+                    <default></default>
+                    <displayStyle>checkbox-left</displayStyle>
+                </booleanParameter>
+            </parameterList>
+        </parameterGroup>
     </parameterList>
     <platformOptionsList>
         <platformOptions>
