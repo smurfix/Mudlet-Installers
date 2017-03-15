@@ -1,5 +1,0 @@
-#!/bin/bash
-cd "$(/usr/bin/dirname "$0")"
-ulimit -c unlimited
-export DYLD_PRINT_LIBRARIES=1
-./mudlet
