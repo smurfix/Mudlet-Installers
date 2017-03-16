@@ -1,7 +1,7 @@
 <project>
     <shortName>Mudlet</shortName>
     <fullName>Mudlet</fullName>
-    <version>3.0.0-final-testing</version>
+    <version>3.0.0-kappa</version>
     <licenseFile>COPYING</licenseFile>
     <leftImage>mudlet_installer_left_side.png</leftImage>
     <logoImage>mudlet.png</logoImage>
