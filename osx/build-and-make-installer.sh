@@ -6,16 +6,17 @@ set -e
 # extract program name for message
 pgm=$(basename "$0")
 
-# check command line option for commit-ish that should be checked out
-commitish="$1"
-if [ -z "$commitish" ]; then
-  echo "Usage: $pgm <commit-ish>"
-  exit 2
-fi
-
 # Retrieve latest source code, keep history as it's useful to edit sometimes
 # if it's already there, keep it as is
 if [ ! -d "source" ]; then
+  # check command line option for commit-ish that should be checked out
+  commitish="$1"
+  if [ -z "$commitish" ]; then
+    echo "No 'source' folder exists and no commit-ish given."
+    echo "Usage: $pgm <commit-ish>"
+    exit 2
+  fi
+
   git clone https://github.com/Mudlet/Mudlet.git source
 
   # Switch to $commitish

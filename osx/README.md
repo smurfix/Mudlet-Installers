@@ -24,7 +24,7 @@ How to generate the installer
 
 Usage:
 ```bash
-./build-and-make-installer.sh <commit-ish>
+./build-and-make-installer.sh [<commit-ish>]
 ```
 
 Example:
@@ -33,6 +33,8 @@ Example:
 ```
 
 The script `build-and-make-installer.sh` installs build dependencies, clones  the git repository of Mudlet, checks the specified `commit-ish`out of the repository and starts building Mudlet. This may take a while. After the build is done, it hands control to the `make-installer.sh` script automatically.
+
+If an `source` subdirectory exists, `commit-ish` is optional. If it exists, the currently checked out branch is used to build, otherwise the Mudlet sources will be cloned into the `source` subdirectory and `commit-ish` will be checked out.
 
 ### Generating the installer only ###
 
