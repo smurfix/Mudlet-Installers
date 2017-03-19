@@ -24,7 +24,12 @@ luarocks-5.1 --local install LuaFileSystem
 luarocks-5.1 --local install lrexlib-pcre
 luarocks-5.1 --local install LuaSQL-SQLite3 SQLITE_DIR=/usr/local/opt/sqlite
 
-npm install -g appdmg
+macOsVersion=$(sw_vers -productVersion)
+if [ "${macOsVersion}" = "10.12" -o "${macOsVersion}" = "10.12.1" -o "${macOsVersion}" = "10.12.2" ]; then
+  npm install -g ArmorText/node-appdmg#feature/background-hack
+else
+  npm install -g appdmg
+fi
 
 # Bundle in Qt libraries
 macdeployqt Mudlet.app
