@@ -20,10 +20,9 @@ done
 if [ ! -f "macdeployqtfix.py" ]; then
   wget https://raw.githubusercontent.com/aurelien-rainone/macdeployqtfix/master/macdeployqtfix.py
 fi
-echo "Need root permissions to install lua rocks..."
-sudo luarocks-5.1 install LuaFileSystem
-sudo luarocks-5.1 install lrexlib-pcre
-sudo luarocks-5.1 install LuaSQL-SQLite3 SQLITE_DIR=/usr/local/opt/sqlite
+luarocks-5.1 --local install LuaFileSystem
+luarocks-5.1 --local install lrexlib-pcre
+luarocks-5.1 --local install LuaSQL-SQLite3 SQLITE_DIR=/usr/local/opt/sqlite
 
 npm install -g appdmg
 
@@ -34,11 +33,11 @@ macdeployqt Mudlet.app
 python macdeployqtfix.py Mudlet.app/Contents/MacOS/Mudlet /usr/local/Cellar/qt5/5.8.0_1/
 
 # Bundle in dynamically loaded libraries
-cp "/usr/local/lib/lua/5.1/lfs.so" Mudlet.app/Contents/MacOS
-cp "/usr/local/lib/lua/5.1/rex_pcre.so" Mudlet.app/Contents/MacOS
+cp "${HOME}/.luarocks/lib/lua/5.1/lfs.so" Mudlet.app/Contents/MacOS
+cp "${HOME}/.luarocks/lib/lua/5.1/rex_pcre.so" Mudlet.app/Contents/MacOS
 # rex_pcre has to be adjusted to load libcpre from the same location
 python macdeployqtfix.py Mudlet.app/Contents/MacOS/rex_pcre.so /usr/local/Cellar/qt5/5.8.0_1/
-cp -r "/usr/local/lib/lua/5.1/luasql" Mudlet.app/Contents/MacOS
+cp -r "${HOME}/.luarocks/lib/lua/5.1/luasql" Mudlet.app/Contents/MacOS
 
 # Edit some nice plist entries, don't fail if entries already exist
 /usr/libexec/PlistBuddy -c "Add CFBundleName string Mudlet" Mudlet.app/Contents/Info.plist || true
