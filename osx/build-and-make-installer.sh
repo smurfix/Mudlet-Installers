@@ -23,7 +23,7 @@ if [ ! -d "source" ]; then
 fi
 
 # set the commit ID so the build can reference it later
-cd  source
+cd source
 commit=$(git rev-parse --short HEAD)
 
 #install dependencies to compile mudlet
@@ -38,7 +38,7 @@ cd src/
 perl -pi -e "s/BUILD = -dev.*$/BUILD = -dev-$commit/" src.pro
 cd ..
 
-mkdir build
+mkdir -p build
 cd build/
 # Remove old Mudlet.app, as macdeployqt doesn't like re-doing things otherwise.
 rm -rf Mudlet.app/
