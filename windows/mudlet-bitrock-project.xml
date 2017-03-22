@@ -412,7 +412,7 @@
     <finalPageActionList>
         <runProgram>
             <program>${installdir}/mudlet.exe</program>
-            <programArguments></programArguments>
+            <programArguments>&amp;</programArguments>
             <progressText>Run ${project.fullName} now</progressText>
             <ruleList>
                 <platformTest>
