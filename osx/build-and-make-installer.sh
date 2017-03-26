@@ -34,19 +34,23 @@ CI/travis.osx.install.sh
 # Setup PATH to find qmake
 PATH=/usr/local/opt/qt5/bin:$PATH
 
-# Add commit information to version
+# Add commit information to version and extract version info itself
 cd src/
 perl -pi -e "s/BUILD = -dev.*$/BUILD = -dev-$commit/" src.pro
+version=$(perl -lne 'print $1 if /^VERSION = (.+)/' < src.pro)
 cd ..
 
 mkdir -p build
 cd build/
 # Remove old Mudlet.app, as macdeployqt doesn't like re-doing things otherwise.
-rm -rf Mudlet.app/
+rm -rf Mudlet*.app/
 
 # Compile using all available cores
 qmake ../src/src.pro
 make -j `sysctl -n hw.ncpu`
+
+# Rename app according to version
+mv Mudlet.app Mudlet-${version}-dev-${commit}.app
 
 # now run the actual installer creation script
 cd ../..
