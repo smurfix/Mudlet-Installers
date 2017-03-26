@@ -36,7 +36,11 @@ PATH=/usr/local/opt/qt5/bin:$PATH
 
 # Add commit information to version and extract version info itself
 cd src/
-perl -pi -e "s/BUILD = -dev.*$/BUILD = -dev-$commit/" src.pro
+# find out if we do a dev or a release build
+dev=$(perl -lne 'print $1 if /^BUILD = (.*)$/' < src.pro)
+if [ ! -z "${dev}" ]; then
+  perl -pi -e "s/BUILD = -dev.*$/BUILD = -dev-$commit/" src.pro
+fi
 version=$(perl -lne 'print $1 if /^VERSION = (.+)/' < src.pro)
 cd ..
 
@@ -49,9 +53,17 @@ rm -rf Mudlet*.app/
 qmake ../src/src.pro
 make -j `sysctl -n hw.ncpu`
 
-# Rename app according to version
-mv Mudlet.app Mudlet-${version}-dev-${commit}.app
+# determine target app name
+if [ ! -z "${dev}" ]; then
+  app=Mudlet-${version}-dev-${commit}.app
+  # Rename app according to version
+  mv Mudlet.app ${app}
+  releaseArg=""
+else
+  app=Mudlet.app
+  releaseArg="-r \"${version}\""
+fi
 
 # now run the actual installer creation script
 cd ../..
-./make-installer.sh
+./make-installer.sh "${releaseArg}" ${app}

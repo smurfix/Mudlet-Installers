@@ -40,13 +40,16 @@ If an `source` subdirectory exists, `commit-ish` is optional. If it exists, the 
 
 Usage:
 ```bash
-./make-installer.sh
+./make-installer.sh <Mudlet app folder to package>
+```
+
+Example:
+```bash
+./build-and-make-installer.sh source/build/Mudlet.app
 ```
 
 Prerequisites:
 
-- A pre-build `Mudlet.app` bundle in `./source/build/`, e.g. the output of the Travis build process or the result of the `build-and-make-installer.sh` before it hands control to this script.
+- A pre-build `.app` bundle in `./source/build/`, e.g. the output of the Travis build process or the result of the `build-and-make-installer.sh` before it hands control to this script.
 
-The script `make-installer.sh` installs all run-time dependencies of Mudlet, copies them as well as Qt required dynamically linked libraries into the `Mudlet.app` bundle, adapts search pathes and finally bundles it all up into a single installable `Mudlet.dmg`.
-
-The script will ask for the `sudo` password to install required `luarocks` libraries.
+The script `make-installer.sh` installs all run-time dependencies of Mudlet, copies them as well as Qt required dynamically linked libraries into the `.app` bundle, adapts search pathes and finally bundles it all up into a single installable `.dmg` according to the passed `.app` bundle name.  

@@ -3,13 +3,35 @@
 # abort script if any command fails
 set -e
 
+# extract program name for message
+pgm=$(basename "$0")
+
+release=""
+
+# find out if we do a release build
+while getopts ":r:" o; do
+  if [ "${o}" = "r" ]; then
+    release="${OPTARG}"
+  else
+    echo "Unknown option -${o}"
+    exit 1
+  fi
+done
+shift $((OPTIND-1))
+
 # set path to find macdeployqt
 PATH=/usr/local/opt/qt5/bin:$PATH
 
 cd source/build
 
 # get the app to package
-app=$(ls -d *.app)
+app=$(basename ${1})
+
+if [ -z "$app" ]; then
+  echo "No Mudlet app folder to package given."
+  echo "Usage: $pgm <Mudlet app folder to package>"
+  exit 2
+fi
 
 # install installer dependencies
 brew update
@@ -48,8 +70,18 @@ python macdeployqtfix.py ${app}/Contents/MacOS/rex_pcre.so /usr/local/Cellar/qt5
 cp -r "${HOME}/.luarocks/lib/lua/5.1/luasql" ${app}/Contents/MacOS
 
 # Edit some nice plist entries, don't fail if entries already exist
-/usr/libexec/PlistBuddy -c "Add CFBundleName string Mudlet" ${app}/Contents/Info.plist || true
-/usr/libexec/PlistBuddy -c "Add CFBundleDisplayName string Mudlet" ${app}/Contents/Info.plist || true
+/usr/libexec/PlistBuddy -c "Add CFBundleName string Mudlet" "${app}/Contents/Info.plist" || true
+/usr/libexec/PlistBuddy -c "Add CFBundleDisplayName string Mudlet" "${app}/Contents/Info.plist" || true
+if [ -z "${release}" ]; then
+  stripped=${app#Mudlet-}
+  version=${stripped%.app}
+  shortVersion=${version%%-*}
+else
+  version="${release}"
+  shortVersion="${release}"
+fi
+/usr/libexec/PlistBuddy -c "Add CFBundleShortVersionString string ${shortVersion}" ${app}/Contents/Info.plist || true
+/usr/libexec/PlistBuddy -c "Add CFBundleVersion string ${version}" ${app}/Contents/Info.plist || true
 
 # Generate final .dmg
 cd ../..
