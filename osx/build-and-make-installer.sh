@@ -20,7 +20,7 @@ if [ ! -d "source" ]; then
   git clone https://github.com/Mudlet/Mudlet.git source
 
   # Switch to $commitish
-  (cd source && git checkout $commitish)
+  (cd source && git checkout "${commitish}")
 fi
 
 # set the commit ID so the build can reference it later
@@ -51,19 +51,21 @@ rm -rf Mudlet*.app/
 
 # Compile using all available cores
 qmake ../src/src.pro
-make -j `sysctl -n hw.ncpu`
+make -j "$(sysctl -n hw.ncpu)"
 
 # determine target app name
 if [ ! -z "${dev}" ]; then
-  app=Mudlet-${version}-dev-${commit}.app
+  app="Mudlet-${version}-dev-${commit}.app"
   # Rename app according to version
-  mv Mudlet.app ${app}
-  releaseArg=""
+  mv Mudlet.app "${app}"
 else
   app=Mudlet.app
-  releaseArg="-r \"${version}\""
 fi
 
 # now run the actual installer creation script
 cd ../..
-./make-installer.sh "${releaseArg}" ${app}
+if [ ! -z "${dev}" ]; then
+  ./make-installer.sh "${app}"
+else
+  ./make-installer.sh -r "${version}" "${app}"
+fi
