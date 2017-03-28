@@ -24,12 +24,12 @@ How to generate the installer
 
 Usage:
 ```bash
-./build-and-make-installer.sh [<commit-ish>]
+$ ./build-and-make-installer.sh [<commit-ish>]
 ```
 
 Example:
 ```bash
-./build-and-make-installer.sh development
+$ ./build-and-make-installer.sh development
 ```
 
 The script `build-and-make-installer.sh` installs build dependencies, clones  the git repository of Mudlet, checks the specified `commit-ish`out of the repository and starts building Mudlet. This may take a while. After the build is done, it hands control to the `make-installer.sh` script automatically.
@@ -40,16 +40,19 @@ If an `source` subdirectory exists, `commit-ish` is optional. If it exists, the 
 
 Usage:
 ```bash
-./make-installer.sh <Mudlet app folder to package>
+$ ./make-installer.sh [-r <version>] <Mudlet app folder to package>
 ```
 
-Example:
+Examples:
 ```bash
-./build-and-make-installer.sh source/build/Mudlet.app
+$ ./make-installer.sh source/build/Mudlet-dev-01923abc.app
+$ ./make-installer.sh -r 3.0.0 source/build/Mudlet.app
 ```
 
 Prerequisites:
 
 - A pre-build `.app` bundle in `./source/build/`, e.g. the output of the Travis build process or the result of the `build-and-make-installer.sh` before it hands control to this script.
 
-The script `make-installer.sh` installs all run-time dependencies of Mudlet, copies them as well as Qt required dynamically linked libraries into the `.app` bundle, adapts search pathes and finally bundles it all up into a single installable `.dmg` according to the passed `.app` bundle name.  
+The script `make-installer.sh` installs all run-time dependencies of Mudlet, copies them as well as Qt required dynamically linked libraries into the `.app` bundle, adapts search pathes and finally bundles it all up into a single installable `.dmg` according to the passed `.app` bundle name.
+
+The optional argument `-r <version>` sets a release version. This will ignore any version information in the bundle name and set the bundle version information according to the given argument instead.
