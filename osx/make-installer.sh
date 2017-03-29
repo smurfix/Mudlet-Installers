@@ -3,51 +3,92 @@
 # abort script if any command fails
 set -e
 
-# Retrieve latest source code, keep history as it's useful to edit sometimes
-if [ ! -d "source" ]; then
-  git clone https://github.com/Mudlet/Mudlet.git source
+# extract program name for message
+pgm=$(basename "$0")
+
+release=""
+
+# find out if we do a release build
+while getopts ":r:" o; do
+  if [ "${o}" = "r" ]; then
+    release="${OPTARG}"
+  else
+    echo "Unknown option -${o}"
+    exit 1
+  fi
+done
+shift $((OPTIND-1))
+
+# set path to find macdeployqt
+PATH=/usr/local/opt/qt5/bin:$PATH
+
+cd source/build
+
+# get the app to package
+app=$(basename "${1}")
+
+if [ -z "$app" ]; then
+  echo "No Mudlet app folder to package given."
+  echo "Usage: $pgm <Mudlet app folder to package>"
+  exit 2
 fi
 
-# In case it already exists, update it
-cd source/
-git pull
+# install installer dependencies
+brew update
+BREWS="sqlite3 lua@5.1 node wget"
+for i in $BREWS; do
+  brew outdated | grep -q "$i" && brew upgrade "$i"
+done
+for i in $BREWS; do
+  brew list | grep -q "$i" || brew install "$i"
+done
+if [ ! -f "macdeployqtfix.py" ]; then
+  wget https://raw.githubusercontent.com/aurelien-rainone/macdeployqtfix/master/macdeployqtfix.py
+fi
+luarocks-5.1 --local install LuaFileSystem
+luarocks-5.1 --local install lrexlib-pcre
+luarocks-5.1 --local install LuaSQL-SQLite3 SQLITE_DIR=/usr/local/opt/sqlite
 
-# Switch to release banrch
-git fetch
-git checkout release_30
-
-# Setup PATH to find qmake
-PATH=/Users/mudlet/Qt/5.8/clang_64/bin:$PATH
-
-cd src/
-# Remove old Mudlet.app, as macdeployqt doesn't like re-doing things otherwise. Requires admin rights.
-sudo rm -rf Mudlet.app/
-
-# Compile using all available cores
-qmake
-make -j `sysctl -n hw.ncpu`
+macOsVersion="$(sw_vers -productVersion)"
+if [ "${macOsVersion}" = "10.12" ] || [ "${macOsVersion}" = "10.12.1" ] || [ "${macOsVersion}" = "10.12.2" ]; then
+  npm install -g ArmorText/node-appdmg#feature/background-hack
+else
+  npm install -g appdmg
+fi
 
 # Bundle in Qt libraries
-cd ../../
-./mac-deploy.sh
+macdeployqt "${app}"
 
-cd source/src
+# fix unfinished deployment of macdeployqt
+python macdeployqtfix.py "${app}/Contents/MacOS/Mudlet" "/usr/local/Cellar/qt5/5.8.0_1/"
+
 # Bundle in dynamically loaded libraries
-sudo cp ../../lfs.so Mudlet.app/Contents/MacOS
-sudo cp ../../rex_pcre.so Mudlet.app/Contents/MacOS
+cp "${HOME}/.luarocks/lib/lua/5.1/lfs.so" "${app}/Contents/MacOS"
+cp "${HOME}/.luarocks/lib/lua/5.1/rex_pcre.so" "${app}/Contents/MacOS"
 # rex_pcre has to be adjusted to load libcpre from the same location
-sudo cp ../../libpcre.1.dylib Mudlet.app/Contents/MacOS
-sudo cp -r ../../luasql Mudlet.app/Contents/MacOS
+python macdeployqtfix.py "${app}/Contents/MacOS/rex_pcre.so" "/usr/local/Cellar/qt5/5.8.0_1/"
+cp -r "${HOME}/.luarocks/lib/lua/5.1/luasql" "${app}/Contents/MacOS"
 
-# As well as the loader for them
-sudo cp ../../run_mudlet Mudlet.app/Contents/MacOS
-
-# Edit the executable to be run_mudlet instead of Mudlet
-/usr/libexec/PlistBuddy -c "Set CFBundleExecutable run_mudlet" Mudlet.app/Contents/Info.plist
+# Edit some nice plist entries, don't fail if entries already exist
+/usr/libexec/PlistBuddy -c "Add CFBundleName string Mudlet" "${app}/Contents/Info.plist" || true
+/usr/libexec/PlistBuddy -c "Add CFBundleDisplayName string Mudlet" "${app}/Contents/Info.plist" || true
+if [ -z "${release}" ]; then
+  stripped="${app#Mudlet-}"
+  version="${stripped%.app}"
+  shortVersion="${version%%-*}"
+else
+  version="${release}"
+  shortVersion="${release}"
+fi
+/usr/libexec/PlistBuddy -c "Add CFBundleShortVersionString string ${shortVersion}" "${app}/Contents/Info.plist" || true
+/usr/libexec/PlistBuddy -c "Add CFBundleVersion string ${version}" "${app}/Contents/Info.plist" || true
 
 # Generate final .dmg
-rm -f ~/Desktop/Mudlet.dmg
+cd ../..
+rm -f ~/Desktop/Mudlet*.dmg
 
-# If you don't get a background image on Sierra, either upgrade
-# or apply a workaround from https://github.com/LinusU/node-appdmg/issues/121
-appdmg ./osx-installer/mudlet-appdmg.json ~/Desktop/Mudlet.dmg
+# Modify appdmg config file according to the app file to package
+perl -pi -e "s/Mudlet.*\\.app/${app}/" appdmg/mudlet-appdmg.json
+
+# Last: build *.dmg file
+appdmg appdmg/mudlet-appdmg.json "${HOME}/Desktop/${app%.*}.dmg"
