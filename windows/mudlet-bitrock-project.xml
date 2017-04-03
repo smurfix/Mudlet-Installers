@@ -380,23 +380,30 @@
                     </distributionFileList>
                 </folder>
             </folderList>
-            <startMenuShortcutList>
+        </component>
+    </componentList>
+    <postInstallationActionList>
+        <createShortcuts>
+            <destination>${windows_folder_common_startmenu}\Programs</destination>
+            <ruleList>
+                <isTrue>
+                    <value>${createshortcut}</value>
+                </isTrue>
+            </ruleList>
+            <shortcutList>
                 <startMenuShortcut>
-                    <comment>Run Mudlet to start playing MUDs!</comment>
+                    <comment></comment>
                     <name>Mudlet</name>
                     <runAsAdmin>0</runAsAdmin>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}/mudlet.exe</windowsExec>
                     <windowsExecArgs></windowsExecArgs>
                     <windowsIcon></windowsIcon>
-                    <windowsPath></windowsPath>
-                    <ruleList>
-                        <isTrue value="${createshortcut}"/>
-                    </ruleList>
+                    <windowsPath>${installdir}</windowsPath>
                 </startMenuShortcut>
-            </startMenuShortcutList>
-        </component>
-    </componentList>
+            </shortcutList>
+        </createShortcuts>
+    </postInstallationActionList>
     <compressionAlgorithm>lzham-ultra</compressionAlgorithm>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
@@ -405,6 +412,7 @@
     <productUrlInfoAbout>http://mudlet.org</productUrlInfoAbout>
     <saveRelativePaths>1</saveRelativePaths>
     <singleInstanceCheck>1</singleInstanceCheck>
+    <startMenuGroupName></startMenuGroupName>
     <vendor>Mudlet makers</vendor>
     <windowsExecutableIcon>mudlet_main_48px.ico</windowsExecutableIcon>
     <windowsUninstallerExecutableIcon>mudlet_main_48px.ico</windowsUninstallerExecutableIcon>
