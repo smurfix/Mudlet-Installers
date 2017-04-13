@@ -32,7 +32,7 @@ CI/travis.osx.before_install.sh
 CI/travis.osx.install.sh
 
 # Setup PATH to find qmake
-PATH=/usr/local/opt/qt5/bin:$PATH
+PATH=/usr/local/opt/qt/bin:$PATH
 
 # Add commit information to version and extract version info itself
 cd src/
