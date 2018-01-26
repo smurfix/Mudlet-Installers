@@ -47,7 +47,7 @@ cp -rf source/src/mudlet-lua build/
 # and the .desktop file so linuxdeployqt can pilfer it for info
 cp source/mudlet{.desktop,.png,.svg} build/
 
-cp -r source/3rdparty/lcf build/lib/
+cp -r source/3rdparty/lcf build/lib/lcf/
 
 # now copy Lua modules we need in
 # this should be improved not to be hardcoded
