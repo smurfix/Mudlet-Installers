@@ -80,6 +80,8 @@ install_name_tool -change "/usr/local/opt/sqlite/lib/libsqlite3.0.dylib" "@execu
 
 cp "${HOME}/.luarocks/lib/lua/5.1/lua-utf8.so" "${app}/Contents/MacOS"
 
+cp "../3rdparty/discord/rpc/lib/libdiscord-rpc.dylib" "${app}/Contents/Frameworks"
+
 if [ -d "../3rdparty/lua_code_formatter" ]; then
   # we renamed lcf at some point
   LCF_NAME="lua_code_formatter"
