@@ -2,6 +2,7 @@
 
 # abort script if any command fails
 set -e
+shopt -s expand_aliases
 
 # extract program name for message
 pgm=$(basename "$0")
@@ -35,13 +36,17 @@ fi
 
 # install installer dependencies
 brew update
-BREWS="sqlite3 lua@5.1 node wget"
+BREWS="sqlite3 lua@5.1 node@8 wget luarocks"
 for i in $BREWS; do
   brew outdated | grep -q "$i" && brew upgrade "$i"
 done
 for i in $BREWS; do
   brew list | grep -q "$i" || brew install "$i"
 done
+# create an alias to avoid the need to list the lua dir all the time
+# we want to expand the subshell only once (it's only tmeporary anyways)
+# shellcheck disable=2139
+alias luarocks-5.1="luarocks --lua-dir='$(brew --prefix lua@5.1)'"
 if [ ! -f "macdeployqtfix.py" ]; then
   wget https://raw.githubusercontent.com/aurelien-rainone/macdeployqtfix/master/macdeployqtfix.py
 fi
@@ -49,6 +54,7 @@ luarocks-5.1 --local install LuaFileSystem
 luarocks-5.1 --local install lrexlib-pcre
 luarocks-5.1 --local install LuaSQL-SQLite3 SQLITE_DIR=/usr/local/opt/sqlite
 luarocks-5.1 --local install luautf8
+luarocks-5.1 --local install lua-yajl
 
 npm install -g ArmorText/node-appdmg#feature/background-hack
 
@@ -60,11 +66,22 @@ python macdeployqtfix.py "${app}/Contents/MacOS/Mudlet" "/usr/local/opt/qt/bin"
 
 # Bundle in dynamically loaded libraries
 cp "${HOME}/.luarocks/lib/lua/5.1/lfs.so" "${app}/Contents/MacOS"
+
 cp "${HOME}/.luarocks/lib/lua/5.1/rex_pcre.so" "${app}/Contents/MacOS"
-# rex_pcre has to be adjusted to load libcpre from the same location
+# rex_pcre has to be adjusted to load libpcre from the same location
 python macdeployqtfix.py "${app}/Contents/MacOS/rex_pcre.so" "/usr/local/opt/qt/bin"
+
 cp -r "${HOME}/.luarocks/lib/lua/5.1/luasql" "${app}/Contents/MacOS"
+cp /usr/local/opt/sqlite/lib/libsqlite3.0.dylib  "${app}/Contents/Frameworks/"
+# sqlite3 has to be adjusted to load libsqlite from the same location
+python macdeployqtfix.py "${app}/Contents/Frameworks/libsqlite3.0.dylib" "/usr/local/opt/qt/bin"
+# need to adjust sqlite3.lua manually as it is a level lower than expected...
+install_name_tool -change "/usr/local/opt/sqlite/lib/libsqlite3.0.dylib" "@executable_path/../../Frameworks/libsqlite3.0.dylib" "${app}/Contents/MacOS/luasql/sqlite3.so"
+
 cp "${HOME}/.luarocks/lib/lua/5.1/lua-utf8.so" "${app}/Contents/MacOS"
+
+cp "../3rdparty/discord/rpc/lib/libdiscord-rpc.dylib" "${app}/Contents/Frameworks"
+
 if [ -d "../3rdparty/lua_code_formatter" ]; then
   # we renamed lcf at some point
   LCF_NAME="lua_code_formatter"
@@ -75,6 +92,10 @@ cp -r "../3rdparty/${LCF_NAME}" "${app}/Contents/MacOS"
 if [ "${LCF_NAME}" != "lcf" ]; then
   mv "${app}/Contents/MacOS/${LCF_NAME}" "${app}/Contents/MacOS/lcf"
 fi
+
+cp "${HOME}/.luarocks/lib/lua/5.1/yajl.so" "${app}/Contents/MacOS"
+# yajl has to be adjusted to load libyajl from the same location
+python macdeployqtfix.py "${app}/Contents/MacOS/yajl.so" "/usr/local/opt/qt/bin"
 
 # Edit some nice plist entries, don't fail if entries already exist
 /usr/libexec/PlistBuddy -c "Add CFBundleName string Mudlet" "${app}/Contents/Info.plist" || true
