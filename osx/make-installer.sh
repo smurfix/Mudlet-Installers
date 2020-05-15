@@ -8,17 +8,21 @@ shopt -s expand_aliases
 pgm=$(basename "$0")
 
 release=""
+ptb=""
 
-# find out if we do a release build
-while getopts ":r:" o; do
-  if [ "${o}" = "r" ]; then
+# find out if we do a release or ptb build
+while getopts ":pr:" option; do
+  if [ "${option}" = "r" ]; then
     release="${OPTARG}"
+    shift $((OPTIND-1))
+  elif [ "${option}" = "p" ]; then
+    ptb="yep"
+    shift $((OPTIND-1))
   else
-    echo "Unknown option -${o}"
+    echo "Unknown option -${option}"
     exit 1
   fi
 done
-shift $((OPTIND-1))
 
 # set path to find macdeployqt
 PATH=/usr/local/opt/qt/bin:$PATH
@@ -34,6 +38,11 @@ if [ -z "$app" ]; then
   exit 2
 fi
 app=$(find . -iname "${app}" -type d)
+if [ -z "${app}" ]; then
+  echo "error: couldn't determine location of the ./app folder"
+  exit 1
+fi
+
 echo "Deploying ${app}"
 
 # install installer dependencies
@@ -121,8 +130,14 @@ cp "${HOME}/.luarocks/lib/lua/5.1/yajl.so" "${app}/Contents/MacOS"
 python macdeployqtfix.py "${app}/Contents/MacOS/yajl.so" "/usr/local/opt/qt/bin"
 
 # Edit some nice plist entries, don't fail if entries already exist
-/usr/libexec/PlistBuddy -c "Add CFBundleName string Mudlet" "${app}/Contents/Info.plist" || true
-/usr/libexec/PlistBuddy -c "Add CFBundleDisplayName string Mudlet" "${app}/Contents/Info.plist" || true
+if [ -z "${ptb}" ]; then
+  /usr/libexec/PlistBuddy -c "Add CFBundleName string Mudlet" "${app}/Contents/Info.plist" || true
+  /usr/libexec/PlistBuddy -c "Add CFBundleDisplayName string Mudlet" "${app}/Contents/Info.plist" || true
+else
+  /usr/libexec/PlistBuddy -c "Add CFBundleName string Mudlet PTB" "${app}/Contents/Info.plist" || true
+  /usr/libexec/PlistBuddy -c "Add CFBundleDisplayName string Mudlet PTB" "${app}/Contents/Info.plist" || true
+fi
+
 if [ -z "${release}" ]; then
   stripped="${app#Mudlet-}"
   version="${stripped%.app}"
@@ -131,11 +146,16 @@ else
   version="${release}"
   shortVersion="${release}"
 fi
+
 /usr/libexec/PlistBuddy -c "Add CFBundleShortVersionString string ${shortVersion}" "${app}/Contents/Info.plist" || true
 /usr/libexec/PlistBuddy -c "Add CFBundleVersion string ${version}" "${app}/Contents/Info.plist" || true
 
 # Sparkle settings, see https://sparkle-project.org/documentation/customization/#infoplist-settings
-/usr/libexec/PlistBuddy -c "Add SUFeedURL string https://feeds.dblsqd.com/MKMMR7HNSP65PquQQbiDIw/release/mac/x86_64/appcast" "${app}/Contents/Info.plist" || true
+if [ -z "${ptb}" ]; then
+  /usr/libexec/PlistBuddy -c "Add SUFeedURL string https://feeds.dblsqd.com/MKMMR7HNSP65PquQQbiDIw/release/mac/x86_64/appcast" "${app}/Contents/Info.plist" || true
+else
+  /usr/libexec/PlistBuddy -c "Add SUFeedURL string https://feeds.dblsqd.com/MKMMR7HNSP65PquQQbiDIw/public-test-build/mac/x86_64/appcast" "${app}/Contents/Info.plist" || true
+fi
 /usr/libexec/PlistBuddy -c "Add SUEnableAutomaticChecks bool true" "${app}/Contents/Info.plist" || true
 /usr/libexec/PlistBuddy -c "Add SUAllowsAutomaticUpdates bool true" "${app}/Contents/Info.plist" || true
 /usr/libexec/PlistBuddy -c "Add SUAutomaticallyUpdate bool true" "${app}/Contents/Info.plist" || true
