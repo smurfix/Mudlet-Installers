@@ -46,8 +46,10 @@ fi
 echo "Deploying ${app}"
 
 # install installer dependencies
-brew update
-BREWS="sqlite3 lua@5.1 node wget luarocks"
+echo "Running brew update-reset"
+brew update-reset
+echo "Finished with brew update-reset"
+BREWS="sqlite3 lua@5.1 node luarocks"
 for i in $BREWS; do
   brew outdated | grep -q "$i" && brew upgrade "$i"
 done
@@ -181,6 +183,15 @@ rm -f ~/Desktop/[mM]udlet*.dmg
 pwd
 # Modify appdmg config file according to the app file to package
 perl -pi -e "s|build/.*Mudlet.*\\.app|build/${app}|i" appdmg/mudlet-appdmg.json
+if [ -z "${ptb}" ]; then
+  perl -pi -e "s|icons/.*\\.icns|icons/mudlet_ptb.icns|i" appdmg/mudlet-appdmg.json
+else
+  if [ -z "${release}" ]; then
+    perl -pi -e "s|icons/.*\\.icns|icons/mudlet_dev.icns|i" appdmg/mudlet-appdmg.json
+  else
+    perl -pi -e "s|icons/.*\\.icns|icons/mudlet.icns|i" appdmg/mudlet-appdmg.json
+  fi
+fi
 
 # Last: build *.dmg file
 appdmg appdmg/mudlet-appdmg.json "${HOME}/Desktop/$(basename "${app%.*}").dmg"
