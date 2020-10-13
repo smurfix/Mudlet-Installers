@@ -129,7 +129,9 @@ if [ "${LCF_NAME}" != "lcf" ]; then
   mv "${app}/Contents/MacOS/${LCF_NAME}" "${app}/Contents/MacOS/lcf"
 fi
 
-if [ "${USE_CJSON}" != "Y" ] ; then
+if [ "${USE_CJSON}" = "Y" ] ; then
+  cp "${HOME}/.luarocks/lib/lua/5.1/cjson.so" "${app}/Contents/MacOS"
+else
   cp "${HOME}/.luarocks/lib/lua/5.1/yajl.so" "${app}/Contents/MacOS"
   # yajl has to be adjusted to load libyajl from the same location
   python macdeployqtfix.py "${app}/Contents/MacOS/yajl.so" "/usr/local/opt/qt/bin"
